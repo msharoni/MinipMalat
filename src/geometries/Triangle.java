@@ -13,7 +13,7 @@ public class Triangle extends Polygon {
     }
 
     @Override
-    public Vector getNormal(Point point) {
-        return null;
+    public boolean equals(Object obj) {//checks if equals
+        return (obj instanceof Triangle) && super.equals(obj);
     }
 }
