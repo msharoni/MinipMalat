@@ -11,7 +11,7 @@ import static primitives.Util.*;
  *
  * @author Dan
  */
-public class Polygon implements Geometry {
+public class Polygon extends Geometry {
     /**
      * List of polygon's vertices
      */
@@ -88,4 +88,13 @@ public class Polygon implements Geometry {
     public Vector getNormal(Point point) {
         return plane.getNormal();
     }
+    
+    @Override 
+    public List<Point> findIntsersections(Ray ray){
+        return null ; 
+    } 
+    @Override 
+    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray){
+        return null ; 
+    } 
 }

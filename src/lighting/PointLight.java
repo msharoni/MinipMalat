@@ -1,0 +1,76 @@
+package lighting;
+
+import primitives.*;
+
+public class PointLight  extends Light implements LightSource   {
+   
+    protected Point position ; 
+    protected double kC,kL,kQ ;
+
+    public Point getPosition() {
+        return this.position;
+    }
+
+    public PointLight setPosition(Point position) {
+        this.position = position;
+        return this;
+    }
+
+    public double getKC() {
+        return this.kC;
+    }
+
+    public PointLight setKc(double kC) {
+        this.kC = kC;
+        return this;
+    }
+
+    public double getKL() {
+        return this.kL;
+    }
+
+    public PointLight setKl(double kL) {
+        this.kL = kL;
+        return this; 
+    }
+
+    public double getKQ() {
+        return this.kQ;
+    }
+
+    public PointLight setKq(double kQ) {
+        this.kQ = kQ;
+        return this;
+    }
+   
+    @Override
+    public Color getIntensity(Point p){
+        double d2 = position.distanceSquared(p);
+        double d = Math.sqrt(d2);
+        return intensity.scale(1.0d/ (kC + kL *d + kQ *d2 ));
+        
+    }
+
+    public PointLight(Color intensity, Point position){
+        this.intensity = intensity ;
+        this.position = position;
+        kC =1 ;
+        kL = 0 ;
+        kQ = 0 ;
+    }
+
+    public PointLight(Point position, double kC,double kL,double kQ , Color intensity){
+        this.intensity = intensity;
+        this.position = position;
+        this.kC =kC ;
+        this.kL = kL ;
+        this.kQ = kQ ;
+    }
+
+
+    @Override
+public Vector getL(Point p){
+    return p.subtract(position).normalize();
+}
+
+}

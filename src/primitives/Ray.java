@@ -1,10 +1,17 @@
 package primitives;
+
+import java.util.List;
+
+import geometries.Intersectable;
+
 /**
  *represnts linear ray in the real numbers world
  *that contains point of start and dir - linear line !
- * @author Mor Sharoni
+ *
+ * @author mor
  */
 public class Ray {
+
     private final  Point p0;
     private final Vector dir;
 
@@ -17,21 +24,58 @@ public class Ray {
         return this.dir;
     }
 
-    public Ray(Point p0, Vector dir) { //simple constructor
+    public Ray(Point p0, Vector dir) { 
         this.p0 = p0;
-        this.dir = dir;
+        this.dir = dir.normalize();
     }
 
     @Override
-    public boolean equals(Object obj) { // checks if the two equal
+    /**
+    *
+    *checks if the two equal
+    *
+    * @author mor
+    */
+    public boolean equals(Object obj) { 
         return (obj instanceof Ray) && (((Ray)obj).p0.equals(this.p0) && ((Ray)obj).dir.equals(this.dir));
     }
 
     @Override
-    public String toString() {//simple command line
+    /**
+    *converts ray obj to String 
+    *
+    * @author mor
+    */
+    public String toString() {
         return "Ray{" +
                 "p0=" + p0 +
                 ", dir=" + dir +
                 '}';
     }
+    public Point getPoint(double t){
+        return this.p0.add(this.dir.scale(t));
+        }
+
+
+    public Point findClosestPoint (List<Point> lst){
+        Point closest = lst.get(0); ;
+        for(Point item :lst){
+            if(item.distanceSquared(this.p0) < closest.distanceSquared(this.p0)){
+                closest = item;
+            }
+        }
+        return closest;
+    }
+
+    public Intersectable.GeoPoint findClosestGeoPoint (List<Intersectable.GeoPoint> lst){
+        Intersectable.GeoPoint closest = lst.get(0); ;
+        for(Intersectable.GeoPoint item :lst){
+            if(item.point.distanceSquared(this.p0) < closest.point.distanceSquared(this.p0)){
+                closest = item;
+            }
+        }
+        return closest;
+    }
+    
+
 }
