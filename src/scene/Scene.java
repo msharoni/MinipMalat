@@ -32,8 +32,9 @@ public class Scene {
     }
 
 
-    public void setGeometries(Geometries geometries) {
+    public Scene setGeometries(Geometries geometries) {
         this.geometries = geometries;
+        return this;
     }
 
     public Scene (String senceName){

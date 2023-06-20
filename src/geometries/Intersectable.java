@@ -1,21 +1,36 @@
 package geometries;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import primitives.*;
 
 public abstract class Intersectable {
     /**
      * to find intersections with shape(3d)
-     * 
-     * 
+     *
+     *
      * @param ray
      * @return
      */
-    public abstract List<Point> findIntsersections(Ray ray);
 
-    public  List<GeoPoint> findGeoIntersections (Ray ray){
-        return findGeoIntersectionsHelper(ray);
+
+    public final List<Point> findIntsersections(Ray ray) {
+        List<GeoPoint> inter = findGeoIntersections(ray, Double.POSITIVE_INFINITY);
+        return inter == null ? null :  inter.stream().map((x)->x.point).collect(Collectors.toList());
     }
-    protected abstract List<GeoPoint> findGeoIntersectionsHelper (Ray ray);
+
+    public final List<GeoPoint> findGeoIntersections(Ray ray) {
+        return findGeoIntersections(ray, Double.POSITIVE_INFINITY);
+    }
+
+    public final List<GeoPoint> findGeoIntersections(Ray ray, double maxDistance) {
+        return findGeoIntersectionsHelper(ray, maxDistance);
+    }
+
+    protected abstract List<GeoPoint>findGeoIntersectionsHelper(Ray ray, double maxDistance);
+
+
+
 
     public static class GeoPoint {
         public final Geometry geometry;
@@ -27,13 +42,13 @@ public abstract class Intersectable {
 
         @Override
         public boolean equals(Object x){
-            return x instanceof GeoPoint 
-            && ((GeoPoint)x).geometry.equals(geometry) &&
-            ((GeoPoint)x).point.equals(point);
+            return x instanceof GeoPoint
+                    && ((GeoPoint)x).geometry.equals(geometry) &&
+                    ((GeoPoint)x).point.equals(point);
         }
 
     }
-    
 
-    
+
+
 }

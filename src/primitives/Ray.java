@@ -2,7 +2,7 @@ package primitives;
 
 import java.util.List;
 
-import geometries.Intersectable;
+import geometries.Intersectable.*;
 
 /**
  *represnts linear ray in the real numbers world
@@ -14,6 +14,8 @@ public class Ray {
 
     private final  Point p0;
     private final Vector dir;
+    private static final double DELTA = 0.1;
+
 
     public Point getP0() {
 
@@ -27,6 +29,14 @@ public class Ray {
     public Ray(Point p0, Vector dir) { 
         this.p0 = p0;
         this.dir = dir.normalize();
+    }
+
+    public Ray(Point q0, Vector dir, Vector normal){
+        if (dir.dotProduct(normal)>0)
+            this.p0=q0.add(normal.scale(DELTA));
+        else
+            this.p0=q0.add(normal.scale(-DELTA));
+        this.dir=dir;
     }
 
     @Override
@@ -67,14 +77,23 @@ public class Ray {
         return closest;
     }
 
-    public Intersectable.GeoPoint findClosestGeoPoint (List<Intersectable.GeoPoint> lst){
-        Intersectable.GeoPoint closest = lst.get(0); ;
-        for(Intersectable.GeoPoint item :lst){
-            if(item.point.distanceSquared(this.p0) < closest.point.distanceSquared(this.p0)){
-                closest = item;
+    public GeoPoint findClosestGeoPoint(List<GeoPoint> points) {
+        if (points ==null)
+            return null;
+        if(points.size() == 0)
+            return null;
+        GeoPoint minPoint = points.get(0);
+        double minDst = Double.POSITIVE_INFINITY;
+        double tmpDst;
+        for (GeoPoint point:points)
+        {
+            tmpDst = this.p0.distance(point.point);
+            if(tmpDst < minDst) {
+                minPoint = point;
+                minDst = tmpDst;
             }
         }
-        return closest;
+        return minPoint;
     }
     
 

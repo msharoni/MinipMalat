@@ -1,5 +1,6 @@
 package geometries;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import primitives.*;
@@ -88,13 +89,53 @@ public class Polygon extends Geometry {
     public Vector getNormal(Point point) {
         return plane.getNormal();
     }
-    
-    @Override 
-    public List<Point> findIntsersections(Ray ray){
-        return null ; 
-    } 
-    @Override 
-    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray){
-        return null ; 
-    } 
+
+
+    @Override
+    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray,double max){
+
+        List<Point> planeInters = plane.findIntsersections(ray);
+        List<GeoPoint> res = new ArrayList<GeoPoint>();
+        if(planeInters == null){
+            return null;
+        }
+
+        List<Vector> vectors = new ArrayList<Vector>();
+        Vector vector;
+        for(int i=0; i<vertices.size(); i++) {
+            vector = vertices.get(i).subtract(ray.getP0());
+            vectors.add(vector);
+        }
+
+        List<Vector> normals = new ArrayList<Vector>();
+        for(int j=0; j< vectors.size()-1; j++){
+            vector = vectors.get(j).crossProduct(vectors.get(j + 1)).normalize();
+            normals.add(vector);
+        }
+        normals.add(vectors.get(vectors.size()-1).crossProduct(vectors.get(0)).normalize());
+
+        boolean temp;
+        for (int index=0; index<planeInters.size(); ++index){
+            temp = true;
+            Vector v = ray.getDir();
+            boolean sign = normals.get(0).dotProduct(v) > 0; //+ is true, - is false
+
+            for(int k=0; temp && k<normals.size(); k++) {
+                if(isZero(v.dotProduct(normals.get(k)))){
+                    temp = false;
+                }
+
+                else if((v.dotProduct(normals.get(k)) > 0) != sign){
+                    temp = false;
+                }
+            }
+            if(temp){
+                res.add(new GeoPoint(planeInters.get(index),this));
+            }
+        }
+        if(res.size() == 0){
+            return null;
+        }
+        return res;
+    }
 }
