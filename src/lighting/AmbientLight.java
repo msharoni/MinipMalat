@@ -3,7 +3,7 @@ package lighting;
 import primitives.*;
 
 public class AmbientLight {
-    private Color intensity;
+    final private Color intensity;
     public AmbientLight(Color rgb , Double3 hanchata){
         this.intensity = rgb.scale(hanchata);
 

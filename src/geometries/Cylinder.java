@@ -2,27 +2,29 @@ package geometries;
 
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import primitives.*;
-/**
- *Limited Tube
- *
- * @author mor
+/*
+ Limited Tube
+
+  @author mor
  */
 
  /**
-     * constructor cylinder with get height 
-     * @return double
-     */
+     * constructor cylinder with get height
+  */
 public class Cylinder extends Tube{
     double height;
-    public double getHeight() {
-        return this.height;
-    }
+
     public Cylinder(Ray axisRay, double radius, double height ) {
         super(axisRay, radius);
-        this.height = height; 
+        this.height = height;
+
+        // Create Box
+        Point p0 = new Point(axisRay.getP0().getX() - radius, axisRay.getP0().getY() - radius, axisRay.getP0().getZ() - radius);
+        Point center = axisRay.getP0().add(axisRay.getDir().scale(height));
+        Point p1 = new Point(center.getX() + radius, center.getY() + radius, center.getZ() + radius);
+        this.box = new Box(p0, p1);
     }
 
     /**
@@ -36,7 +38,7 @@ public class Cylinder extends Tube{
     }
 
     @Override
-    /**
+    /*
      * get normal of vector
      * @return normal
      */
@@ -47,7 +49,7 @@ public class Cylinder extends Tube{
             point.equals(axisRay.getP0().add(this.axisRay.getDir().scale(height)) ) ){
             return  this.axisRay.getDir() ;
         } 
-        // checks if it is in the bases and if it is it returbns axsix dir and if it not calc like tube 
+        // checks if it is in the bases and if it is it returns axis dir and if it not calc like tube
         double radiusSquared = this.radius * this.radius;
         Vector toOtherBase = this.axisRay.getDir().scale(this.height) ; 
         Point p0Ver2 = this.axisRay.getP0().add(toOtherBase);
@@ -63,11 +65,6 @@ public class Cylinder extends Tube{
 
      @Override
      public List<GeoPoint> findGeoIntersectionsHelper(Ray ray,double max) {
-         /**
-          * we find the projection and calcs its size and if it is like the height the point inside the cylinder (we can use dot product cause the axsis in normalized )
-          *
-          */
-
          List<GeoPoint> res = new ArrayList<>();
          List<GeoPoint> lst = super.findGeoIntersectionsHelper(ray,max);
          if (lst != null)

@@ -13,15 +13,15 @@ import primitives.*;
 public class VectorTests {
 
     @Test 
-    public void testdotProduct(){
+    public void testDotProduct(){
     // ============ Equivalence Partitions Tests ==============
     Vector v1 = new Vector(1,1,0); 
     Vector v2 = new Vector(1,3,0);
      //  4 = sqrt(2) * SQRT(10) * cos(x)
-     //  A = 50 CEL - zavit hada 
+     //  A = 50 CEL - acute angle
      assertEquals("Add() wrong result", v1.dotProduct(v2) ,4 , 0.00001 );
      Vector v3 = new Vector(-1,-3,0);
-     // zavit cheha - 129 cel 
+     // obtuse angle - 129 cel
      assertEquals("Add() wrong result", v1.dotProduct(v3) ,-4 , 0.00001 );
     // =============== Boundary Values Tests ==================
     Vector vn1 = new Vector(1,0,0); 
@@ -31,7 +31,7 @@ public class VectorTests {
     }
 
     @Test 
-    public void testNormalize(){//TODO
+    public void testNormalize(){
         Vector v = new Vector(0, 3, 4);
         Vector n = v.normalize();
         // ============ Equivalence Partitions Tests ==============
@@ -53,7 +53,7 @@ public class VectorTests {
     }
 
     @Test 
-    public void testLengthSqured(){
+    public void testLengthSquared(){
     // ============ Equivalence Partitions Tests ==============
     Vector v1 = new Vector(1,1,1); 
     assertEquals("scale() wrong result pos scalar", v1.lengthSquared(),3 , 0.00001 );
@@ -68,7 +68,7 @@ public class VectorTests {
     double t = 3 ;  
     assertEquals("scale() wrong result pos scalar", v1.scale(t), new Vector(3,3,3));
     t = -3 ;  
-    assertEquals("sclae() wrong result", v1.scale(t), new Vector(-3,-3,-3));
+    assertEquals("scale() wrong result", v1.scale(t), new Vector(-3,-3,-3));
      // =============== Boundary Values Tests ==================
      assertThrows("scale() for parallel vectors does not throw an exception",
      IllegalArgumentException.class, () -> v1.scale(0));
@@ -91,7 +91,7 @@ public class VectorTests {
         assertTrue("crossProduct() result is not orthogonal to 2nd operand", isZero(vr.dotProduct(v2)));
 
         // =============== Boundary Values Tests ==================
-        // TC11: test zero vector from cross-productof co-lined vectors
+        // TC11: test zero vector from cross-product of co-lined vectors
         Vector v3 = new Vector(-2, -4, -6);
         assertThrows("crossProduct() for parallel vectors does not throw an exception",
                 IllegalArgumentException.class, () -> v1.crossProduct(v3));
@@ -102,17 +102,17 @@ public class VectorTests {
         Vector v1 = new Vector(1,1,0); 
         Vector v2 = new Vector(1,3,0);
          //  4 = sqrt(2) * SQRT(10) * cos(x)
-         //  A = 50 CEL - zavit hada 
+         //  A = 50 CEL - acute angle
          assertEquals("Add() wrong result", v1.add(v2) ,new Vector(2,4,0) );
          Vector v3 = new Vector(-1,-3,0);
-         // zavit cheha - 129 cel 
+         // obtuse angle - 129 cel
          assertEquals("Add() wrong result", v1.add(v3) ,new Vector(0,-2,0) );
         // =============== Boundary Values Tests ==================
        Vector vn1 = new Vector(1,1,1); 
         v2 = new Vector(2,2,2); 
-        assertEquals("coliner vectors are not creating colinear vector  " , vn1.add(v2),new Vector(3,3,3));
+        assertEquals("collinear vectors are not creating collinear vector  " , vn1.add(v2),new Vector(3,3,3));
         Vector vn2 = new Vector(-1,-1,-1);
-        assertThrows("Add() cant create Zero Vector for oppiste vectors ", 
+        assertThrows("Add() cant create Zero Vector for opposite vectors ",
         IllegalArgumentException.class, 
         () -> vn1.add(vn2) );
         v1 = new Vector(1,0,0); 

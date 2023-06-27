@@ -18,11 +18,17 @@ public class RayTracerBasic extends RayTracerBase {
     private static final double MIN_CALC_COLOR_K = 0.001;
     private static final Double3 INITIAL_K = new Double3(1.0);
 
+    private int RAYSNUM = 1;
+    private double DISTANCE = 350;
+    private double RADIUS = 5;
+
+
+
 
     /**
-     * find the point where the ray intersacte with object
+     * find the point where the ray intersect with object
      * @param ray the ray
-     * @return the color that the pixel shuld be peinted by
+     * @return the color that the pixel should be pointed by
      */
     @Override
     public Color traceRay(Ray ray) {
@@ -54,11 +60,11 @@ public class RayTracerBasic extends RayTracerBase {
         Material material=intersection.geometry.getMaterial();
 
         Double3 kkr= material.kR.product(k);
-        if (!kkr.lowerThan(MIN_CALC_COLOR_K)){
+        if (kkr.lowerThan(MIN_CALC_COLOR_K)){
             color= calcGlobalEffect(constructReflectedRay(intersection.point,ray,normal), level,material.kR,kkr);
         }
         Double3 kkt= material.kT.product(k);
-        if (!kkt.lowerThan(MIN_CALC_COLOR_K)){
+        if (kkt.lowerThan(MIN_CALC_COLOR_K)){
             color= color.add(
                     calcGlobalEffect(constructRefractedRay(intersection.point,ray,normal), level,material.kT,kkt));
         }
@@ -100,7 +106,7 @@ public class RayTracerBasic extends RayTracerBase {
             if (nl * nv > 0)
             { // sign(nl) == sing(nv)
                 Double3 ktr=transparency(intersection,lightSource,l,n);
-                if (!ktr.product(k).lowerThan(MIN_CALC_COLOR_K))
+                if (ktr.product(k).lowerThan(MIN_CALC_COLOR_K))
                 {
                     Color iL = lightSource.getIntensity(intersection.point).scale(ktr);
                     color = color.add(iL.scale(calcDiffusive(material, nl)),
@@ -124,7 +130,7 @@ public class RayTracerBasic extends RayTracerBase {
 
 
     /**
-     * calculate the diffusive of the matirial
+     * calculate the diffusion of the material
      * @return the diffusive
      */
     private Double3 calcDiffusive(Material material, double nl) {
@@ -132,7 +138,17 @@ public class RayTracerBasic extends RayTracerBase {
             nl = nl*-1;
         return material.kD.scale(nl);
     }
+    public RayTracerBasic setGlossyBlurry(int raysNum) {
+        RAYSNUM = raysNum;
+        return this;
+    }
+    public RayTracerBasic setGlossyBlurry(int raysNum, double distance, double radius) {
+        RAYSNUM = raysNum;
+        RADIUS = radius;
+        DISTANCE = distance;
+        return this;
 
+    }
     private Double3 transparency(GeoPoint gp, LightSource light, Vector l, Vector n){
         Vector lightDirection = l.scale(-1); // from point to light source
         Ray lightRay = new Ray(gp.point, lightDirection,n);
@@ -149,8 +165,5 @@ public class RayTracerBasic extends RayTracerBase {
         }
         return ktr;
     }
-
-
-
 }
 

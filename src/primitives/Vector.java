@@ -1,8 +1,7 @@
 package primitives;
 
-import java.awt.*;
 /**
- *represnts linear vector in the real numbers world
+ *represents linear vector in the real numbers world
  *
  * @author mor
  */
@@ -100,33 +99,23 @@ public class Vector extends Point {
 
     }
 
-    public Vector Roatate(double angle , Vector axsis ){
-        angle = angle / 180 * Math.PI ;
-        double cosa = Math.cos(angle ) , sina = Math.sin(angle);
-        double  x = axsis.xyz.d1 , y = axsis.xyz.d2 , z=axsis.xyz.d3 ,x2 = x*x ,y2 =y*y, z2 = z*z;
-        double tx = this.xyz.d1 , ty = this.xyz.d2 ,tz =this.xyz.d3 ;
-        return new Vector(
-                (x2*(1-cosa)+ cosa )*tx +  (x*y*(1-cosa)-sina)*ty + (x*z*(1-cosa)+y*sina)*tz ,
-                (x*y*(1-cosa)+z*sina)*tx + (y2*(1-cosa)+cosa)*ty + (y*z*(1-cosa)-x*sina)*tz ,
-                (x*z*(1-cosa)-y*sina)*tx + (y*z*(1-cosa)+x*sina)*ty + (z2*(1-cosa)+cosa)*tz
-        );
+    public Vector findNormal() {
+        if (Util.alignZero(xyz.d3) != 0) {
+            Vector vz = new Vector(1, 0, -xyz.d1 / xyz.d3);
+            if (vz.equals(this))
+                return new Vector(1, 1, -(xyz.d1 + xyz.d2) / xyz.d3);
+            else
+                return vz;
+        } else {
+            if (Util.alignZero(xyz.d2) != 0) {
+                Vector v = new Vector(1, -xyz.d1 / xyz.d2, 1);
+                if (v.equals(this))
+                    return new Vector(1, -xyz.d1 / xyz.d2, 0);
+                else
+                    return v;
+            } else
+                return new Vector(0, 1, 0);
 
-    }
-
-    public Vector rotate(Vector axis, double angle){
-        double x, y, z;
-        double u, v, w;
-        x=getX();y=getY();z=getZ();
-        u=axis.getX();v=axis.getY();w=axis.getZ();
-        double xPrime = u*(u*x + v*y + w*z)*(1d - Math.cos(angle))
-                + x*Math.cos(angle)
-                + (-w*y + v*z)*Math.sin(angle);
-        double yPrime = v*(u*x + v*y + w*z)*(1d - Math.cos(angle))
-                + y*Math.cos(angle)
-                + (w*x - u*z)*Math.sin(angle);
-        double zPrime = w*(u*x + v*y + w*z)*(1d - Math.cos(angle))
-                + z*Math.cos(angle)
-                + (-v*x + u*y)*Math.sin(angle);
-        return new Vector(xPrime, yPrime, zPrime);
+        }
     }
 }

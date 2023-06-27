@@ -1,7 +1,4 @@
 package unittests.renderer;
-
-import java.util.*;
-
 import primitives.*;
 import primitives.Vector;
 import geometries.*;
@@ -14,7 +11,7 @@ import static java.awt.Color.*;
 
 public class BowlingTest {
 
-    private Scene scene = new Scene("Bowling Scene");
+    final private Scene scene = new Scene("Bowling Scene");
 
     public void addPin(Point p)
     {

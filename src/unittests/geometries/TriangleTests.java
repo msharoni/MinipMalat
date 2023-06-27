@@ -45,12 +45,12 @@ public class TriangleTests {
 		// TC10: Vertex on a side of a quadrangular
 		assertThrows(IllegalArgumentException.class, //
 				() -> new Triangle(new Point(0, 0, 1),  new Point(0, 1, 0), new Point(0, 0.5, 0.5)),
-				"Constructed a Triangle with vertix on a side");
+				"Constructed a Triangle with vertex on a side");
 
 		// TC11: Last point = first point
 		assertThrows(IllegalArgumentException.class, //
 				() -> new Polygon(new Point(0, 0, 1), new Point(1, 0, 0), new Point(0, 0, 1)),
-				"Constructed a Triangle with vertice on a side");
+				"Constructed a Triangle with vertices on a side");
 
 
 	}
@@ -77,33 +77,33 @@ public class TriangleTests {
 		// ============ Equivalence Partitions Tests ==============
 		//TC01: Ray intersect inside Triangle
 		Ray r1 = new Ray(new Point(-1, -1, 1), new Vector(1, 1, 1));
-		assertEquals(List.of(new Point(0.9473684210526312, 0.9473684210526312, 2.947368421052631)), p1.findIntsersections(r1),
+		assertEquals(List.of(new Point(0.9473684210526312, 0.9473684210526312, 2.947368421052631)), p1.findIntersections(r1),
 				"findIntersections() wrong result");
 
 		//TC02: Ray intersect outside Triangle against edge
 		Ray r2 = new Ray(new Point(-1, -1, 1), new Vector(1, 1, 4));
-		assertNull(p1.findIntsersections(r2),
+		assertNull(p1.findIntersections(r2),
 				"findIntersections() wrong result");
 
 		//TC03: Ray intersect outside Triangle against vertex
 		Ray r3 = new Ray(new Point(-1, -1, 1), new Vector(7, 4, -1));
-		assertNull(p1.findIntsersections(r3),
+		assertNull(p1.findIntersections(r3),
 				"findIntersections() wrong result");
 
 		// =============== Boundary Values Tests ==================
 		//TC11: Ray intersect on edge
 		Ray r4 = new Ray(new Point(-1, -1, 1), new Vector(2.6, 3, 1.6));
-		assertNull(p1.findIntsersections(r4),
+		assertNull(p1.findIntersections(r4),
 				"findIntersections() Ray intersect on edge wrong result");
 
 		//TC12: Ray intersect in vertex
 		Ray r5 = new Ray(new Point(-1, -1, 1), new Vector(0, -1, 3));
-		assertNull(p1.findIntsersections(r5),
+		assertNull(p1.findIntersections(r5),
 				"findIntersections() Ray intersect in vertex wrong result");
 
 		//TC13: Ray intersect on edge's continuation
 		Ray r6 = new Ray(new Point(-1, -1, 1), new Vector(3, 5, 1.5));
-		assertNull(p1.findIntsersections(r6),
+		assertNull(p1.findIntersections(r6),
 				"findIntersections() Ray intersect on edge's continuation wrong result");
 	}
 }

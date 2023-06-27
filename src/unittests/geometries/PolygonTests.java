@@ -9,8 +9,6 @@ import org.junit.jupiter.api.Test;
 import geometries.*;
 import primitives.*;
 
-import java.util.List;
-
 /**
  * Testing Polygons
  * 

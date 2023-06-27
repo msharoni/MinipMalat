@@ -5,7 +5,7 @@ import java.util.List;
 import geometries.Intersectable.*;
 
 /**
- *represnts linear ray in the real numbers world
+ *represents linear ray in the real numbers world
  *that contains point of start and dir - linear line !
  *
  * @author mor
@@ -40,21 +40,21 @@ public class Ray {
     }
 
     @Override
-    /**
-    *
-    *checks if the two equal
-    *
-    * @author mor
+    /*
+
+    checks if the two equal
+
+     @author mor
     */
     public boolean equals(Object obj) { 
         return (obj instanceof Ray) && (((Ray)obj).p0.equals(this.p0) && ((Ray)obj).dir.equals(this.dir));
     }
 
     @Override
-    /**
-    *converts ray obj to String 
-    *
-    * @author mor
+    /*
+    converts ray obj to String
+
+     @author mor
     */
     public String toString() {
         return "Ray{" +
@@ -65,17 +65,6 @@ public class Ray {
     public Point getPoint(double t){
         return this.p0.add(this.dir.scale(t));
         }
-
-
-    public Point findClosestPoint (List<Point> lst){
-        Point closest = lst.get(0); ;
-        for(Point item :lst){
-            if(item.distanceSquared(this.p0) < closest.distanceSquared(this.p0)){
-                closest = item;
-            }
-        }
-        return closest;
-    }
 
     public GeoPoint findClosestGeoPoint(List<GeoPoint> points) {
         if (points ==null)

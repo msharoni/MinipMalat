@@ -1,12 +1,10 @@
 package geometries;
-
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import primitives.*;
 
 /**
- *Spgere
+ *Sphere
  *
  * @author mor
  */
@@ -17,6 +15,11 @@ public class Sphere extends Geometry{
     public Sphere(Point center, double radius) {//simple constructor
         this.center = center;
         this.radius = radius;
+
+        // Create Box
+        Point p0 = new Point(center.getX() - radius, center.getY() - radius, center.getZ() - radius);
+        Point p1 = new Point(center.getX() + radius, center.getY() + radius, center.getZ() + radius);
+        this.box = new Box(p0, p1);
     }
 
     /**
@@ -31,6 +34,7 @@ public class Sphere extends Geometry{
     public boolean equals(Object obj) {
         return (obj instanceof Sphere) && this.center.equals(((Sphere) obj).center) && this.radius == ((Sphere) obj).radius;
     }
+
 
 
 

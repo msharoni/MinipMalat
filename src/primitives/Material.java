@@ -113,17 +113,4 @@ public class Material {
     public Material setShininess(int nShininess) {
         this.nShininess = nShininess;return this;
     }
-
-
-    public Double3 getKd() {
-        return this.kD;
-    }
-
-    public Double3 getKs() {
-        return this.kS;
-    }
-
-    public int getShininess() {
-        return this.nShininess;
-    }
 }

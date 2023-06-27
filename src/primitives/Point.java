@@ -1,6 +1,6 @@
 package primitives;
 /**
- *represnts linear point in the real numbers world
+ *represents linear point in the real numbers world
  *
  * @author mor
  */

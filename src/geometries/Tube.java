@@ -1,14 +1,11 @@
 package geometries;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import primitives.*;
 /**
  *Tube
  *
- * @author Idan and Eliyahu
+ * @author mor
  */
 public class Tube extends Geometry{
 
@@ -21,12 +18,12 @@ public class Tube extends Geometry{
     }
 
     /**
-     * t - sclar to mult the dir
+     * t - scalar to multiply the dir
      * O - center of the circle of the tube in the plane of the point
      * @return normal
      */
     @Override
-    public Vector getNormal(Point point) { //by the formulla in the slides
+    public Vector getNormal(Point point) { //by the formula in the slides
         double t  =  axisRay.getDir().dotProduct(
                 point.subtract(
                         axisRay.getP0()));
@@ -85,18 +82,18 @@ public class Tube extends Geometry{
             return null;
 
         if (t1 > 0 && t2 > 0) {
-            List<GeoPoint> _points = new LinkedList<GeoPoint>();
+            List<GeoPoint> _points = new LinkedList<>();
             _points.add(new Intersectable.GeoPoint(ray.getPoint(t1),this));
             _points.add(new Intersectable.GeoPoint(ray.getPoint(t2),this));
             return _points;
         }
         else if (t1 > 0) {
-            List<GeoPoint> _points = new LinkedList<GeoPoint>();
+            List<GeoPoint> _points = new LinkedList<>();
             _points.add(new Intersectable.GeoPoint(ray.getPoint(t1),this));
             return  _points;
         }
         else if (t2 > 0) {
-            List<GeoPoint> _points = new LinkedList<GeoPoint>();
+            List<GeoPoint> _points = new LinkedList<>();
             _points.add(new Intersectable.GeoPoint(ray.getPoint(t2),this));
             return _points;
         }

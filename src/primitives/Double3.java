@@ -19,10 +19,6 @@ public class Double3 {
 	 * Zero triad (0,0,0)
 	 */
 	public static final Double3 ZERO = new Double3(0, 0, 0);
-	/**
-	 * Ones triad (1,1,1)
-	 */
-	public static final Double3 ONE = new Double3(1, 1, 1);
 
 
 	/**
@@ -126,7 +122,7 @@ public class Double3 {
 		return new Double3(d1 * rhs.d1, d2 * rhs.d2, d3 * rhs.d3);
 	}
 	public boolean lowerThan(double k) {
-		return d1 < k && d2 < k && d3 < k;
+		return !(d1 < k) || !(d2 < k) || !(d3 < k);
 	}
 
 }

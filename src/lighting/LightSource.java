@@ -3,8 +3,8 @@ package lighting;
 import primitives.*;
 
 public interface LightSource {
-    public Color getIntensity(Point p);
-    public Vector getL(Point p);
+    Color getIntensity(Point p);
+    Vector getL(Point p);
     double getDistance(Point point);
 
 

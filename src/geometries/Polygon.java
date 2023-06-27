@@ -21,7 +21,6 @@ public class Polygon extends Geometry {
      * Associated plane in which the polygon lays
      */
     protected Plane plane;
-    private int size;
 
     /**
      * Polygon constructor based on vertices list. The list must be ordered by edge
@@ -70,7 +69,7 @@ public class Polygon extends Geometry {
         // with
         // the normal. If all the rest consequent edges will generate the same sign -
         // the
-        // polygon is convex ("kamur" in Hebrew).
+        // polygon is convex.
         boolean positive = edge1.crossProduct(edge2).dotProduct(n) > 0;
         for (int i = 1; i < vertices.length; ++i) {
             // Test that the point is in the same plane as calculated originally
@@ -82,7 +81,6 @@ public class Polygon extends Geometry {
             if (positive != (edge1.crossProduct(edge2).dotProduct(n) > 0))
                 throw new IllegalArgumentException("All vertices must be ordered and the polygon must be convex");
         }
-        size = vertices.length;
     }
 
     @Override
@@ -94,20 +92,20 @@ public class Polygon extends Geometry {
     @Override
     public List<GeoPoint> findGeoIntersectionsHelper(Ray ray,double max){
 
-        List<Point> planeInters = plane.findIntsersections(ray);
-        List<GeoPoint> res = new ArrayList<GeoPoint>();
+        List<Point> planeInters = plane.findIntersections(ray);
+        List<GeoPoint> res = new ArrayList<>();
         if(planeInters == null){
             return null;
         }
 
-        List<Vector> vectors = new ArrayList<Vector>();
+        List<Vector> vectors = new ArrayList<>();
         Vector vector;
-        for(int i=0; i<vertices.size(); i++) {
-            vector = vertices.get(i).subtract(ray.getP0());
+        for (Point vertex : vertices) {
+            vector = vertex.subtract(ray.getP0());
             vectors.add(vector);
         }
 
-        List<Vector> normals = new ArrayList<Vector>();
+        List<Vector> normals = new ArrayList<>();
         for(int j=0; j< vectors.size()-1; j++){
             vector = vectors.get(j).crossProduct(vectors.get(j + 1)).normalize();
             normals.add(vector);
@@ -115,22 +113,20 @@ public class Polygon extends Geometry {
         normals.add(vectors.get(vectors.size()-1).crossProduct(vectors.get(0)).normalize());
 
         boolean temp;
-        for (int index=0; index<planeInters.size(); ++index){
+        for (Point planeInter : planeInters) {
             temp = true;
             Vector v = ray.getDir();
             boolean sign = normals.get(0).dotProduct(v) > 0; //+ is true, - is false
 
-            for(int k=0; temp && k<normals.size(); k++) {
-                if(isZero(v.dotProduct(normals.get(k)))){
+            for (int k = 0; temp && k < normals.size(); k++) {
+                if (isZero(v.dotProduct(normals.get(k)))) {
                     temp = false;
-                }
-
-                else if((v.dotProduct(normals.get(k)) > 0) != sign){
+                } else if ((v.dotProduct(normals.get(k)) > 0) != sign) {
                     temp = false;
                 }
             }
-            if(temp){
-                res.add(new GeoPoint(planeInters.get(index),this));
+            if (temp) {
+                res.add(new GeoPoint(planeInter, this));
             }
         }
         if(res.size() == 0){

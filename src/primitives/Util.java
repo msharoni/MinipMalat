@@ -15,7 +15,6 @@ public abstract class Util {
 	private Util() {}
 
 	// double store format (bit level):
-	//    seee eeee eeee (1.)mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
 	// 1 bit sign, 11 bits exponent, 53 bits (52 stored) normalized mantissa
 	// the number is m+2^e where 1<=m<2
 	// NB: exponent is stored "normalized" (i.e. always positive by adding 1023)
@@ -47,26 +46,5 @@ public abstract class Util {
 		return getExp(number) < ACCURACY ? 0.0 : number;
 	}
 
-	/**
-	 * Check whether two numbers have the same sign
-	 * 
-	 * @param n1 1st number
-	 * @param n2 2nd number
-	 * @return true if the numbers have the same sign
-	 */
-	public static boolean checkSign(double n1, double n2) {
-		return (n1 < 0 && n2 < 0) || (n1 > 0 && n2 > 0);
-	}
-
-	/**
-	 * Provide a real random number in range between min and max
-	 * 
-	 * @param min value (included)
-	 * @param max value (excluded)
-	 * @return the random value
-	 */
-	public static double random(double min, double max) {
-		return Math.random() * (max - min) + min;
-	}
 
 }

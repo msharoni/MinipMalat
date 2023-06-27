@@ -4,20 +4,16 @@ import primitives.Color;
 import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
-
-import java.util.ArrayList;
 import java.util.MissingResourceException;
 import java.util.stream.IntStream;
-
 import static primitives.Util.isZero;
-import static primitives.Util.random;
-import static renderer.Pixel.*;
+
 
 public class Camera {
-    private Point position;
-    private Vector vTo;
-    private Vector vRight;
-    private Vector vUp;
+    final private Point position;
+    final private Vector vTo;
+    final private Vector vRight;
+    final private Vector vUp;
     private double distanceCameraToViewPlane;
     private double width;
     private double height;
@@ -25,25 +21,17 @@ public class Camera {
     private ImageWriter imageWriter;
     private RayTracerBase rayTracer;
 
-    private boolean isAntiAliasingOn;
-    private boolean isAdaptiveSuperSamplingOn = false;
-    private int eyeRaysAmount = 9;
-    private int adaptiveMaxDepth = 4;
-
-    // Depth Of Field
-    private boolean isDepthOfFieldOn = false;
-    private double apertureRadius = 0;
-    private double focalDistance;
-    private  double focalRaysAmount = 20;
+    final private boolean isAntiAliasingOn = false;
+    final private boolean isAdaptiveSuperSamplingOn = false;
 
     // Multithreading
-    private boolean isMultithreadingOn = false;
+    final private boolean isMultithreadingOn = false;
 
     /**
      *
-     * @param position
-     * @param vTo
-     * @param vUp
+     * @param position the position
+     * @param vTo the vTo vector
+     * @param vUp the up vector
      */
     public Camera(Point position, Vector vTo, Vector vUp) {
         if(!isZero(vTo.dotProduct(vUp))) //Vto is not orthogonal to vUp
@@ -53,25 +41,11 @@ public class Camera {
         this.vRight = vTo.crossProduct(vUp).normalize();
         this.position = position;
     }
-    public Camera(Point position,Point target){
-        if(position.equals(target))
-            throw new IllegalArgumentException("position must by different from target");
-
-        this.position=position;
-        vTo=target.subtract(position).normalize();
-        vUp =new Vector(0,0,1);
-        if (vTo.getZ()!=0) {
-            double vUpZ = Math.abs((vTo.getX() * vTo.getX() + vTo.getY() * vTo.getY()) / vTo.getZ());
-            vUp = new Vector(vTo.getX(), vTo.getY(), vUpZ).normalize();
-        }
-        this.vRight=this.vTo.crossProduct(this.vUp);
-    }
-
     /**
      *
-     * @param width
-     * @param height
-     * @return this
+     * @param width width
+     * @param height height
+     * @return this current camera
      */
     public Camera setVPSize(double width, double height) {
         this.width = width;
@@ -81,8 +55,8 @@ public class Camera {
 
     /**
      *
-     * @param distance
-     * @return this
+     * @param distance distance
+     * @return this the current camera
      */
     public Camera setVPDistance(double distance) {
         this.distanceCameraToViewPlane = distance;
@@ -91,8 +65,8 @@ public class Camera {
 
     /**
      *
-     * @param imageWriter
-     * @return
+     * @param imageWriter the gotten image writer
+     * @return returns this camera
      */
     public Camera setImageWriter(ImageWriter imageWriter) {
         this.imageWriter = imageWriter;
@@ -101,66 +75,12 @@ public class Camera {
 
     /**
      *
-     * @param rayTracerBasic
-     * @return
+     * @param rayTracerBasic the wanted raytracer-basic
+     * @return the current camera
      */
     public Camera setRayTracer(RayTracerBase rayTracerBasic) {
         this.rayTracer = rayTracerBasic;
         return this;
-    }
-
-    /**
-     *
-     * @return Point position
-     */
-    public Point getPosition() {
-        return position;
-    }
-
-    /**
-     *
-     * @return Vector vTo
-     */
-    public Vector getvTo() {
-        return vTo;
-    }
-
-    /**
-     *
-     * @return Vector vRight
-     */
-    public Vector getvRight() {
-        return vRight;
-    }
-
-    /**
-     *
-     * @return Vector vUp
-     */
-    public Vector getvUp() {
-        return vUp;
-    }
-
-    /**
-     *
-     * @return distance from camera to view plane
-     */
-
-
-    /**
-     *
-     * @return width
-     */
-    public double getWidth() {
-        return width;
-    }
-
-    /**
-     *
-     * @return height
-     */
-    public double getHeight() {
-        return height;
     }
 
     /**
@@ -184,8 +104,7 @@ public class Camera {
         if (xJ != 0) pIJ = pIJ.add(vRight.scale(xJ));
         if (yI != 0) pIJ = pIJ.add(vUp.scale(yI));
         Vector vectorToThePixel = pIJ.subtract(this.position);
-        Ray rayThroughPixel = new Ray(this.position, vectorToThePixel);
-        return rayThroughPixel;
+        return new Ray(this.position, vectorToThePixel);
     }
 
     /**
@@ -194,37 +113,34 @@ public class Camera {
     public Camera renderImage() {
         if(imageWriter == null ||
                 rayTracer == null)
-            throw new MissingResourceException("Not all fields of camera were initiallized", "", "");
+            throw new MissingResourceException("Not all fields of camera were initialized", "", "");
         int nX = imageWriter.getNx();
         int nY = imageWriter.getNy();
 
         if(isMultithreadingOn){
-            Pixel.initialize(nY, nX, getPrintInterval());
-            IntStream.range(0, nY).parallel().forEach(i -> {
-                IntStream.range(0, nX).parallel().forEach(j -> {
-                    Color pixelColor;
-                    Ray ray;
-                    if(isAdaptiveSuperSamplingOn){
-                        pixelColor = adaptiveAntiAliasing(nX,nY,j,i);
-                    }
-                    else if(isAntiAliasingOn)
-                        pixelColor = antiAliasing(nX,nY,j,i);
-                    else{
-                        ray = constructRay(nX, nY, j, i);
-                        pixelColor = rayTracer.traceRay(ray);
-                    }
-                    Pixel.pixelDone();
-                    Pixel.printPixel();
-                    imageWriter.writePixel(j, i, pixelColor);
-                });
-            });
+            IntStream.range(0, nY).parallel().forEach(i -> IntStream.range(0, nX).parallel().forEach(j -> {
+                Color pixelColor;
+                Ray ray;
+                if(isAdaptiveSuperSamplingOn){
+                    pixelColor = adaptiveAntiAliasing(nX,nY,j,i);
+                }
+                else if(isAntiAliasingOn)
+                    pixelColor = antiAliasing(nX,nY,j,i);
+                else{
+                    ray = constructRay(nX, nY, j, i);
+                    pixelColor = rayTracer.traceRay(ray);
+                }
+                imageWriter.writePixel(j, i, pixelColor);
+            }));
         }
         else{
             Color pixelColor;
             Ray ray;
             for (int i = 0; i < nX; i++){
+                double total = nX * nY;
+                double totalDone = i*nY;
+                //System.out.println((totalDone * 100 )/total + "%");
                 for (int j = 0; j < nY; j++){
-                    System.out.println(i + "," + j);
                     if(isAdaptiveSuperSamplingOn){
                         pixelColor = adaptiveAntiAliasing(nX,nY,j,i);
                     }
@@ -237,35 +153,36 @@ public class Camera {
                     imageWriter.writePixel(j, i, pixelColor);
                 }
             }
+            System.out.println("100%");
         }
         return this;
     }
 
     /**
      * This function implements adaptive super-sampling
-     * @param nX
-     * @param nY
-     * @param j
-     * @param i
-     * @return
+     *@param nX width of view plane
+     *@param nY height of view plane
+     *@param j col
+     *@param i row
+     * @return what is gotten from the recursive function
      */
     private Color adaptiveAntiAliasing(int nX, int nY, int j, int i) {
         Point center = getCenterOfPixel(nX,nY,j,i);
         double pixelSize = this.height/nY;
+        int adaptiveMaxDepth = 4;
         return adaptiveAntiAliasing_(center,pixelSize, adaptiveMaxDepth);
     }
 
     /**
      * This is the recursive function for adaptive super sampling
-     * @param center
-     * @param squareSize
-     * @param depth
-     * @return
+     * @param center center
+     * @param squareSize size
+     * @param depth depth
+     * @return antialiasing result
      */
     private Color adaptiveAntiAliasing_(Point center, double squareSize, int depth){
         Color result = Color.BLACK;
-        Point newCenter = null;
-        ArrayList<Color> quartersColors = new ArrayList<Color>(); // each time we divide the square to four squares
+        Point newCenter;
         Point p1 = center.add(vUp.scale(0.5*squareSize)).add(vRight.scale(-0.5*squareSize));
         Point p2 = center.add(vUp.scale(0.5*squareSize)).add(vRight.scale(0.5*squareSize));
         Point p3 = center.add(vUp.scale(-0.5*squareSize)).add(vRight.scale(-0.5*squareSize));
@@ -298,15 +215,13 @@ public class Camera {
 
     /**
      * This function return the center point of a pixel
-     * @param nX
-     * @param nY
-     * @param j
-     * @param i
-     * @return
+     *@param nX width of view plane
+     *@param nY height of view plane
+     *@param j col
+     *@param i row
+     * @return the center point of a pixel
      */
     private Point getCenterOfPixel(int nX, int nY, int j, int i){
-        Vector vectorToThePixel;
-        Ray rayThroughPixel;
         Point pIJCenter = position.add(vTo.scale(distanceCameraToViewPlane)); // = Pc
         double rY = this.height / nY; //rY is the size of the vertical rib of the pixel (without the horizontal rib)
         double rX = this.width / nX; //rX is the size of the horizontal rib of the pixel (without teh vertical rib)
@@ -318,11 +233,11 @@ public class Camera {
     }
     /**
      * This function implements Anti Aliasing algorithm
-     * @param nX
-     * @param nY
-     * @param j
-     * @param i
-     * @return
+     *@param nX width of view plane
+     *@param nY height of view plane
+     *@param j col
+     *@param i row
+     * @return the color
      */
     private Color antiAliasing(int nX, int nY, int j, int i) {
         Color sumColors = new Color(0,0,0);
@@ -338,7 +253,8 @@ public class Camera {
 
         // make the top-left corner of the pixel
         Point pIJ;
-        double interval = rX/eyeRaysAmount;
+        int eyeRaysAmount = 9;
+        double interval = rX/ eyeRaysAmount;
 
         for (double z = 0; z < eyeRaysAmount; z++)
         {
@@ -356,15 +272,14 @@ public class Camera {
                 sumColors = sumColors.add(rayTracer.traceRay(rayThroughPixel));
             }
         }
-        // calculate the average color (there are eyeRaysAmount^2 sample rays);
-        Color avarageColor = sumColors.scale((double) 1/(eyeRaysAmount*eyeRaysAmount));
-        return avarageColor;
+        // calculate and return the average color (there are eyeRaysAmount^2 sample rays);
+        return sumColors.scale((double) 1/(eyeRaysAmount * eyeRaysAmount));
     }
 
     /**
      * this method add a grid to the rendered image.
      * @param interval the width/height of each square in the grid.
-     * @param color
+     * @param color color
      */
     public Camera printGrid(int interval, Color color) {
         if(imageWriter == null)

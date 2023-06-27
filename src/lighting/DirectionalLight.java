@@ -3,7 +3,7 @@ package lighting;
 import primitives.*;
 
 public class DirectionalLight extends Light implements LightSource {
-    private Vector direction;
+    private final Vector direction;
 
    public  DirectionalLight(Color Intensity,Vector Direction){
        this.direction = Direction ; 
